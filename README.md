@@ -5,6 +5,7 @@
 На практике узнаете про проектирование баз данных, PaaS, мониторинг ошибок, Vite, ORM, фреймворк Fastify, шаблонизацию и Tailwind CSS.
 
 Учебный проект Хекслета: https://ru.hexlet.io/programs/backend
+Задеплоенное приложение: https://task-manager-tiltstable.onrender.com
 Как это должно работать: https://files.hexlet.app/a/0rk6cs
 
 
