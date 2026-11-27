@@ -1,0 +1,41 @@
+<% layout("../layouts/application", { header: it.t('views.labels.index.index') }) %>
+<a
+  class="inline-block cursor-pointer rounded bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700"
+  href="<%= it.route('newLabel') %>"
+  ><%= it.t('views.labels.new.new') %></a
+>
+<div class="overflow-x-auto">
+<table class="mt-5 w-full bg-white text-left">
+  <thead>
+    <tr>
+      <th class="px-3 py-3"><%= it.t('views.labels.columns.id') %></th>
+      <th class="px-3 py-3"><%= it.t('views.labels.columns.name') %></th>
+      <th class="px-3 py-3"><%= it.t('views.labels.columns.createdAt') %></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% it.labels.forEach((label) => { %>
+    <tr class="odd:bg-gray-50">
+      <td class="px-3 py-2"><%= label.id %></td>
+      <td class="px-3 py-2"><%= label.name %></td>
+      <td class="px-3 py-2"><%= it.formatDate(label.createdAt) %></td>
+      <td class="px-3 py-2">
+        <div class="flex items-center gap-2">
+          <a
+            class="cursor-pointer rounded bg-blue-600 px-2 py-1 text-sm text-white hover:bg-blue-700"
+            href="<%= it.route('editLabel', { id: label.id }) %>"
+            ><%= it.t('views.labels.buttons.edit') %></a
+          >
+          <%~ include("../mixins/buttonTo", {
+            action: it.route('deleteLabel', { id: label.id }),
+            method: 'delete',
+            class: 'cursor-pointer rounded bg-red-600 px-2 py-1 text-sm text-white hover:bg-red-700',
+            value: it.t('views.labels.buttons.delete'),
+          }) %>
+        </div>
+      </td>
+    </tr>
+    <% }) %>
+  </tbody>
+</table>
+</div>

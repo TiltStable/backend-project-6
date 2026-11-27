@@ -7,7 +7,7 @@ import fastify from 'fastify';
 import init from '../server/plugin.js';
 import encrypt from '../server/lib/secure.js';
 import { runMigrations } from '../server/db/index.js';
-import { tasks, taskStatuses, users } from '../server/db/schema.js';
+import { tasks, taskStatuses, taskLabels, labels, users } from '../server/db/schema.js';
 import { getTestData, prepareData } from './helpers/index.js';
 
 const jar = (response) =>
@@ -626,6 +626,193 @@ describe('test tasks CRUD', () => {
     expect(alertText(list.body)).toBe('Status is used in tasks');
     const rows = await app.db.select().from(tasks);
     expect(rows.find((row) => row.id === task.id)).toBeDefined();
+  });
+
+  const createLabelViaDb = async (name = faker.lorem.word()) => {
+    const [label] = await app.db.insert(labels).values({ name }).returning();
+    return label;
+  };
+
+  const labelsOfTask = async (taskId) => {
+    const rows = await app.db
+      .select({ label: labels })
+      .from(taskLabels)
+      .innerJoin(labels, eq(taskLabels.labelId, labels.id))
+      .where(eq(taskLabels.taskId, taskId));
+    return rows.map(({ label }) => label);
+  };
+
+  it('new renders the labels multi-select with options', async () => {
+    const cookie = await signIn();
+    const label = await createLabelViaDb();
+    const response = await app.inject({
+      method: 'GET',
+      url: app.reverse('newTask'),
+      cookies: cookie,
+    });
+
+    expect(response.statusCode).toBe(200);
+    expect(response.body).toContain('name="data[labels][]"');
+    expect(response.body).toContain('multiple');
+    expect(response.body).toContain(`value="${label.id}"`);
+  });
+
+  it('create with labels links them to the task', async () => {
+    const cookie = await signIn();
+    const status = await createStatusViaDb();
+    const labelA = await createLabelViaDb();
+    const labelB = await createLabelViaDb();
+    const params = {
+      name: faker.lorem.words({ min: 2, max: 4 }),
+      statusId: String(status.id),
+      labels: [String(labelA.id), String(labelB.id)],
+    };
+    const response = await app.inject({
+      method: 'POST',
+      url: app.reverse('tasks'),
+      cookies: cookie,
+      payload: { data: params },
+    });
+
+    expect(response.statusCode).toBe(302);
+    const rows = await app.db.select().from(tasks);
+    const task = rows.find((item) => item.name === params.name);
+    const linked = await labelsOfTask(task.id);
+    expect(linked.map((label) => label.id).sort()).toEqual([labelA.id, labelB.id].sort());
+  });
+
+  it('create without labels leaves no links', async () => {
+    const cookie = await signIn();
+    const status = await createStatusViaDb();
+    const params = {
+      name: faker.lorem.words({ min: 2, max: 4 }),
+      statusId: String(status.id),
+    };
+    const response = await app.inject({
+      method: 'POST',
+      url: app.reverse('tasks'),
+      cookies: cookie,
+      payload: { data: params },
+    });
+
+    expect(response.statusCode).toBe(302);
+    const rows = await app.db.select().from(tasks);
+    const task = rows.find((item) => item.name === params.name);
+    expect(await labelsOfTask(task.id)).toHaveLength(0);
+  });
+
+  it('create rejects a scalar unknown label without a server error', async () => {
+    const cookie = await signIn();
+    const status = await createStatusViaDb();
+    const response = await app.inject({
+      method: 'POST',
+      url: app.reverse('tasks'),
+      cookies: cookie,
+      payload: { data: { name: 'Whatever', statusId: String(status.id), labels: '999' } },
+    });
+
+    expect(response.statusCode).toBe(200);
+    expect(response.body).toContain('Must be existing labels');
+  });
+
+  it('create rejects an unknown label in the array', async () => {
+    const cookie = await signIn();
+    const status = await createStatusViaDb();
+    const response = await app.inject({
+      method: 'POST',
+      url: app.reverse('tasks'),
+      cookies: cookie,
+      payload: {
+        data: { name: 'Whatever', statusId: String(status.id), labels: ['999'] },
+      },
+    });
+
+    expect(response.statusCode).toBe(200);
+    expect(response.body).toContain('Must be existing labels');
+  });
+
+  it('edit prefills the selected labels', async () => {
+    const cookie = await signIn();
+    const labelA = await createLabelViaDb();
+    const labelB = await createLabelViaDb();
+    const task = await createTaskViaDb();
+    await app.db.insert(taskLabels).values([
+      { taskId: task.id, labelId: labelA.id },
+      { taskId: task.id, labelId: labelB.id },
+    ]);
+    const response = await app.inject({
+      method: 'GET',
+      url: app.reverse('editTask', { id: task.id }),
+      cookies: cookie,
+    });
+
+    expect(response.statusCode).toBe(200);
+    expect(response.body).toContain(`<option value="${labelA.id}" selected>`);
+    expect(response.body).toContain(`<option value="${labelB.id}" selected>`);
+  });
+
+  it('update replaces the task labels', async () => {
+    const cookie = await signIn();
+    const labelA = await createLabelViaDb();
+    const labelB = await createLabelViaDb();
+    const task = await createTaskViaDb();
+    await app.db.insert(taskLabels).values({ taskId: task.id, labelId: labelA.id });
+    const status = await createStatusViaDb();
+    const response = await app.inject({
+      method: 'PATCH',
+      url: app.reverse('updateTask', { id: task.id }),
+      cookies: cookie,
+      payload: {
+        data: {
+          name: task.name,
+          statusId: String(status.id),
+          labels: [String(labelB.id)],
+        },
+      },
+    });
+
+    expect(response.statusCode).toBe(302);
+    const linked = await labelsOfTask(task.id);
+    expect(linked.map((label) => label.id)).toEqual([labelB.id]);
+  });
+
+  it('update with no labels removes the links', async () => {
+    const cookie = await signIn();
+    const labelA = await createLabelViaDb();
+    const task = await createTaskViaDb();
+    await app.db.insert(taskLabels).values({ taskId: task.id, labelId: labelA.id });
+    const status = await createStatusViaDb();
+    const response = await app.inject({
+      method: 'PATCH',
+      url: app.reverse('updateTask', { id: task.id }),
+      cookies: cookie,
+      payload: {
+        data: { name: task.name, statusId: String(status.id) },
+      },
+    });
+
+    expect(response.statusCode).toBe(302);
+    expect(await labelsOfTask(task.id)).toHaveLength(0);
+  });
+
+  it('show renders label badges', async () => {
+    const cookie = await signIn();
+    const labelA = await createLabelViaDb('Important');
+    const labelB = await createLabelViaDb('Bug');
+    const task = await createTaskViaDb();
+    await app.db.insert(taskLabels).values([
+      { taskId: task.id, labelId: labelA.id },
+      { taskId: task.id, labelId: labelB.id },
+    ]);
+    const response = await app.inject({
+      method: 'GET',
+      url: app.reverse('showTask', { id: task.id }),
+      cookies: cookie,
+    });
+
+    expect(response.statusCode).toBe(200);
+    expect(response.body).toContain('Important');
+    expect(response.body).toContain('Bug');
   });
 
   afterAll(async () => {

@@ -40,4 +40,26 @@
   <div class="mt-1 text-sm text-red-600"><%= executorErrors.map(({ message }) => message).join('. ') %></div>
   <% } %>
 </div>
+<%
+  const labelErrors = it._.get(it.errors ?? {}, 'labels');
+  const labelsHaveError = !it._.isEmpty(labelErrors);
+  const isLabelSelected = (label) => (it.selectedLabelIds ?? []).map(String).includes(String(label.id));
+%>
+<div class="mb-4">
+  <label class="mb-1 block font-medium" for="data_labels"><%= it.t('attributes.labels') %></label>
+  <select
+    multiple
+    class="w-full rounded <%= labelsHaveError ? 'border-red-500' : 'border-gray-300' %>"
+    id="data_labels"
+    name="data[labels][]"
+    size="3"
+  >
+    <% it.labels.forEach((label) => { %>
+    <option value="<%= label.id %>" <%= isLabelSelected(label) ? 'selected' : '' %>><%= label.name %></option>
+    <% }) %>
+  </select>
+  <% if (labelsHaveError) { %>
+  <div class="mt-1 text-sm text-red-600"><%= labelErrors.map(({ message }) => message).join('. ') %></div>
+  <% } %>
+</div>
 <%~ include("../mixins/submit", { value: it.submitValue }) %>

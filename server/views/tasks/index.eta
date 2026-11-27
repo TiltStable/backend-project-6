@@ -29,6 +29,9 @@
         <label class="mb-1 block font-medium" for="filter_label"><%= it.t('views.tasks.filters.label') %></label>
         <select class="w-full rounded border border-gray-300" id="filter_label" name="labelId">
           <option value=""></option>
+          <% it.labels.forEach((label) => { %>
+          <option value="<%= label.id %>"><%= label.name %></option>
+          <% }) %>
         </select>
       </div>
     </div>

@@ -8,6 +8,7 @@ export default {
       description: 'Описание',
       statusId: 'Статус',
       executorId: 'Исполнитель',
+      labels: 'Метки',
       firstName: 'Имя',
       lastName: 'Фамилия',
       email: 'Email',
@@ -23,6 +24,7 @@ export default {
       tasks: {
         statusInvalid: 'Выберите существующий статус',
         executorInvalid: 'Выберите существующего пользователя',
+        labelsInvalid: 'Выберите существующие метки',
       },
     },
     flash: {
@@ -64,6 +66,20 @@ export default {
           blocked: 'Статус используется в задачах',
         },
       },
+      labels: {
+        create: {
+          error: 'Не удалось создать метку',
+          success: 'Метка успешно создана',
+        },
+        update: {
+          error: 'Не удалось изменить метку',
+          success: 'Метка успешно изменена',
+        },
+        delete: {
+          success: 'Метка удалена',
+          blocked: 'Метка используется в задачах',
+        },
+      },
       tasks: {
         create: {
           error: 'Не удалось создать задачу',
@@ -83,6 +99,7 @@ export default {
       application: {
         users: 'Пользователи',
         statuses: 'Статусы',
+        labels: 'Метки',
         tasks: 'Задачи',
         signIn: 'Вход',
         signUp: 'Регистрация',
@@ -137,6 +154,28 @@ export default {
         },
         edit: {
           edit: 'Редактирование статуса',
+          submit: 'Сохранить',
+        },
+      },
+      labels: {
+        index: {
+          index: 'Метки',
+        },
+        columns: {
+          id: 'ID',
+          name: 'Наименование',
+          createdAt: 'Дата создания',
+        },
+        buttons: {
+          edit: 'Изменить',
+          delete: 'Удалить',
+        },
+        new: {
+          new: 'Создать метку',
+          submit: 'Сохранить',
+        },
+        edit: {
+          edit: 'Редактирование метки',
           submit: 'Сохранить',
         },
       },

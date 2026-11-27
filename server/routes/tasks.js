@@ -3,8 +3,17 @@
 import _ from 'lodash';
 import { desc, eq } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/pg-core';
-import { tasks, taskStatuses, users } from '../db/schema.js';
-import { create, getById, remove, update, validate } from '../lib/tasks.js';
+import { labels, tasks, taskStatuses, users } from '../db/schema.js';
+import {
+  create,
+  getById,
+  getLabelIdsForTask,
+  getLabelsForTask,
+  remove,
+  replaceLabelsForTask,
+  update,
+  validate,
+} from '../lib/tasks.js';
 
 const fullName = (user) => `${user.firstName} ${user.lastName}`.trim();
 
@@ -24,6 +33,7 @@ export default (app) => {
   const loadFormData = async () => ({
     statuses: await app.db.select().from(taskStatuses),
     users: await app.db.select().from(users),
+    labels: await app.db.select().from(labels),
   });
 
   app
@@ -54,21 +64,34 @@ export default (app) => {
       '/tasks/new',
       { name: 'newTask', preValidation: app.authenticate },
       async (_req, reply) => {
-        reply.render('tasks/new', { task: {}, ...(await loadFormData()) });
+        reply.render('tasks/new', {
+          task: {},
+          selectedLabelIds: [],
+          ...(await loadFormData()),
+        });
         return reply;
       },
     )
     .post('/tasks', { preValidation: app.authenticate }, async (req, reply) => {
       const data = req.body?.data;
-      const { errors, values } = await validate(app.db, data, req.t);
+      const { errors, values, labelIds } = await validate(app.db, data, req.t);
 
       if (!_.isEmpty(errors)) {
         req.flash('error', req.t('flash.tasks.create.error'));
-        reply.render('tasks/new', { task: { ...data }, ...(await loadFormData()), errors });
+        reply.render('tasks/new', {
+          task: { ...data },
+          selectedLabelIds: labelIds,
+          ...(await loadFormData()),
+          errors,
+        });
         return reply;
       }
 
-      await create(app.db, { ...values, creatorId: req.user.id });
+      // The task row and its label links are stored atomically.
+      await app.db.transaction(async (tx) => {
+        const [{ id }] = await create(tx, { ...values, creatorId: req.user.id });
+        await replaceLabelsForTask(tx, id, labelIds);
+      });
       req.flash('info', req.t('flash.tasks.create.success'));
       reply.redirect(app.reverse('tasks'));
       return reply;
@@ -87,11 +110,13 @@ export default (app) => {
           .leftJoin(creators, eq(tasks.creatorId, creators.id))
           .leftJoin(executors, eq(tasks.executorId, executors.id))
           .where(eq(tasks.id, task.id));
+        const taskLabels = await getLabelsForTask(app.db, task.id);
         reply.render('tasks/show', {
           task,
           statusName: row.status?.name ?? '',
           creatorName: row.creator ? fullName(row.creator) : '',
           executorName: row.executor ? fullName(row.executor) : '',
+          labels: taskLabels,
           currentUserId: req.user.id,
         });
         return reply;
@@ -102,7 +127,12 @@ export default (app) => {
       { name: 'editTask', preValidation: app.authenticate },
       async (req, reply) => {
         const task = await findTaskOrNotFound(req.params.id);
-        reply.render('tasks/edit', { task, ...(await loadFormData()) });
+        const selectedLabelIds = await getLabelIdsForTask(app.db, task.id);
+        reply.render('tasks/edit', {
+          task,
+          selectedLabelIds,
+          ...(await loadFormData()),
+        });
         return reply;
       },
     )
@@ -112,19 +142,24 @@ export default (app) => {
       async (req, reply) => {
         const task = await findTaskOrNotFound(req.params.id);
         const data = req.body?.data;
-        const { errors, values } = await validate(app.db, data, req.t);
+        const { errors, values, labelIds } = await validate(app.db, data, req.t);
 
         if (!_.isEmpty(errors)) {
           req.flash('error', req.t('flash.tasks.update.error'));
           reply.render('tasks/edit', {
             task: { ...task, ...values, ...data },
+            selectedLabelIds: labelIds,
             ...(await loadFormData()),
             errors,
           });
           return reply;
         }
 
-        await update(app.db, task.id, values);
+        // The task row and its label links are updated atomically.
+        await app.db.transaction(async (tx) => {
+          await update(tx, task.id, values);
+          await replaceLabelsForTask(tx, task.id, labelIds);
+        });
         req.flash('success', req.t('flash.tasks.update.success'));
         reply.redirect(app.reverse('tasks'));
         return reply;

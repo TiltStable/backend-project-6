@@ -8,6 +8,7 @@ export default {
       description: 'Description',
       statusId: 'Status',
       executorId: 'Executor',
+      labels: 'Labels',
       firstName: 'First name',
       lastName: 'Last name',
       email: 'Email',
@@ -23,6 +24,7 @@ export default {
       tasks: {
         statusInvalid: 'Must be an existing status',
         executorInvalid: 'Must be an existing user',
+        labelsInvalid: 'Must be existing labels',
       },
     },
     flash: {
@@ -64,6 +66,20 @@ export default {
           blocked: 'Status is used in tasks',
         },
       },
+      labels: {
+        create: {
+          error: 'Failed to create label',
+          success: 'Label successfully created',
+        },
+        update: {
+          error: 'Failed to update label',
+          success: 'Label has been updated',
+        },
+        delete: {
+          success: 'Label has been deleted',
+          blocked: 'Label is used in tasks',
+        },
+      },
       tasks: {
         create: {
           error: 'Failed to create task',
@@ -83,6 +99,7 @@ export default {
       application: {
         users: 'Users',
         statuses: 'Statuses',
+        labels: 'Labels',
         tasks: 'Tasks',
         signIn: 'Login',
         signUp: 'Register',
@@ -137,6 +154,28 @@ export default {
         },
         edit: {
           edit: 'Edit status',
+          submit: 'Save',
+        },
+      },
+      labels: {
+        index: {
+          index: 'Labels',
+        },
+        columns: {
+          id: 'ID',
+          name: 'Name',
+          createdAt: 'Created at',
+        },
+        buttons: {
+          edit: 'Edit',
+          delete: 'Delete',
+        },
+        new: {
+          new: 'Create label',
+          submit: 'Save',
+        },
+        edit: {
+          edit: 'Edit label',
           submit: 'Save',
         },
       },
