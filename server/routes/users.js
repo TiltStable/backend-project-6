@@ -1,7 +1,8 @@
 // @ts-check
 
 import _ from 'lodash';
-import { users } from '../db/schema.js';
+import { eq, or } from 'drizzle-orm';
+import { tasks, users } from '../db/schema.js';
 import { create, findById, remove, update, validate } from '../lib/users.js';
 
 export default (app) => {
@@ -99,6 +100,16 @@ export default (app) => {
       async (req, reply) => {
         const { id } = await findUserOrNotFound(req.params.id);
         if (denyIfNotSelf(req, reply, id)) {
+          return reply;
+        }
+        // A user related to at least one task (as creator or executor) is kept.
+        const relatedTasks = await app.db
+          .select({ id: tasks.id })
+          .from(tasks)
+          .where(or(eq(tasks.creatorId, id), eq(tasks.executorId, id)));
+        if (relatedTasks.length > 0) {
+          req.flash('error', req.t('flash.users.delete.blocked'));
+          reply.redirect(app.reverse('users'));
           return reply;
         }
         await remove(app.db, id);

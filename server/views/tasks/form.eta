@@ -1,0 +1,43 @@
+<%
+  const statusErrors = it._.get(it.errors ?? {}, 'statusId');
+  const statusHasError = !it._.isEmpty(statusErrors);
+  const executorErrors = it._.get(it.errors ?? {}, 'executorId');
+  const executorHasError = !it._.isEmpty(executorErrors);
+  const isExecutorSelected = (user) => String(it._.get(it.entity, 'executorId')) === String(user.id);
+  const isStatusSelected = (status) => String(it._.get(it.entity, 'statusId')) === String(status.id);
+%>
+<%~ include("../mixins/input", { entity: it.entity, propertyName: 'name', errors: it.errors, type: 'text' }) %>
+<%~ include("../mixins/input", { entity: it.entity, propertyName: 'description', errors: it.errors, type: 'textarea' }) %>
+<div class="mb-4">
+  <label class="mb-1 block font-medium" for="data_statusId"><%= it.t('attributes.statusId') %></label>
+  <select
+    class="w-full rounded <%= statusHasError ? 'border-red-500' : 'border-gray-300' %>"
+    id="data_statusId"
+    name="data[statusId]"
+  >
+    <option value=""><%= it.t('views.tasks.selects.chooseStatus') %></option>
+    <% it.statuses.forEach((status) => { %>
+    <option value="<%= status.id %>" <%= isStatusSelected(status) ? 'selected' : '' %>><%= status.name %></option>
+    <% }) %>
+  </select>
+  <% if (statusHasError) { %>
+  <div class="mt-1 text-sm text-red-600"><%= statusErrors.map(({ message }) => message).join('. ') %></div>
+  <% } %>
+</div>
+<div class="mb-4">
+  <label class="mb-1 block font-medium" for="data_executorId"><%= it.t('attributes.executorId') %></label>
+  <select
+    class="w-full rounded <%= executorHasError ? 'border-red-500' : 'border-gray-300' %>"
+    id="data_executorId"
+    name="data[executorId]"
+  >
+    <option value=""><%= it.t('views.tasks.selects.chooseExecutor') %></option>
+    <% it.users.forEach((user) => { %>
+    <option value="<%= user.id %>" <%= isExecutorSelected(user) ? 'selected' : '' %>><%= `${user.firstName} ${user.lastName}`.trim() %></option>
+    <% }) %>
+  </select>
+  <% if (executorHasError) { %>
+  <div class="mt-1 text-sm text-red-600"><%= executorErrors.map(({ message }) => message).join('. ') %></div>
+  <% } %>
+</div>
+<%~ include("../mixins/submit", { value: it.submitValue }) %>

@@ -5,6 +5,9 @@ export default {
     appName: 'Task Manager',
     attributes: {
       name: 'Name',
+      description: 'Description',
+      statusId: 'Status',
+      executorId: 'Executor',
       firstName: 'First name',
       lastName: 'Last name',
       email: 'Email',
@@ -16,6 +19,10 @@ export default {
         emailTaken: 'This email is already registered',
         emailInvalid: 'Must be a valid email',
         passwordLength: 'Must be at least 3 characters',
+      },
+      tasks: {
+        statusInvalid: 'Must be an existing status',
+        executorInvalid: 'Must be an existing user',
       },
     },
     flash: {
@@ -39,6 +46,7 @@ export default {
         },
         delete: {
           success: 'User has been deleted',
+          blocked: 'User has related tasks',
         },
         noRights: 'You are not allowed to perform this action',
       },
@@ -53,6 +61,20 @@ export default {
         },
         delete: {
           success: 'Status has been deleted',
+          blocked: 'Status is used in tasks',
+        },
+      },
+      tasks: {
+        create: {
+          error: 'Failed to create task',
+          success: 'Task successfully created',
+        },
+        update: {
+          error: 'Failed to update task',
+          success: 'Task has been updated',
+        },
+        delete: {
+          success: 'Task has been deleted',
         },
       },
       authError: 'Access denied! Please login',
@@ -61,6 +83,7 @@ export default {
       application: {
         users: 'Users',
         statuses: 'Statuses',
+        tasks: 'Tasks',
         signIn: 'Login',
         signUp: 'Register',
         signOut: 'Logout',
@@ -115,6 +138,48 @@ export default {
         edit: {
           edit: 'Edit status',
           submit: 'Save',
+        },
+      },
+      tasks: {
+        index: {
+          index: 'Tasks',
+          create: 'Create task',
+        },
+        columns: {
+          id: 'ID',
+          name: 'Name',
+          status: 'Status',
+          creator: 'Author',
+          executor: 'Executor',
+          createdAt: 'Created at',
+        },
+        buttons: {
+          edit: 'Edit',
+          delete: 'Delete',
+        },
+        new: {
+          new: 'Task creation',
+          submit: 'Create',
+        },
+        edit: {
+          edit: 'Edit task',
+          submit: 'Edit',
+        },
+        show: {
+          author: 'Author',
+          executor: 'Executor',
+          createdAt: 'Created at',
+        },
+        selects: {
+          chooseStatus: 'Select a status',
+          chooseExecutor: 'Select an executor',
+        },
+        filters: {
+          status: 'Status',
+          executor: 'Executor',
+          label: 'Label',
+          onlyMine: 'Only my tasks',
+          submit: 'Show',
         },
       },
       welcome: {

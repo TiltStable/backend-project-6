@@ -1,0 +1,88 @@
+<% layout("../layouts/application", { header: it.t('views.tasks.index.index') }) %>
+<a
+  class="inline-block cursor-pointer rounded bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700"
+  href="<%= it.route('newTask') %>"
+  ><%= it.t('views.tasks.index.create') %></a
+>
+<div class="mt-5 rounded bg-white p-4 shadow-sm">
+  <form action="<%= it.route('tasks') %>" method="get">
+    <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+      <div>
+        <label class="mb-1 block font-medium" for="filter_statusId"><%= it.t('views.tasks.filters.status') %></label>
+        <select class="w-full rounded border border-gray-300" id="filter_statusId" name="statusId">
+          <option value=""></option>
+          <% it.statuses.forEach((status) => { %>
+          <option value="<%= status.id %>"><%= status.name %></option>
+          <% }) %>
+        </select>
+      </div>
+      <div>
+        <label class="mb-1 block font-medium" for="filter_executorId"><%= it.t('views.tasks.filters.executor') %></label>
+        <select class="w-full rounded border border-gray-300" id="filter_executorId" name="executorId">
+          <option value=""></option>
+          <% it.users.forEach((user) => { %>
+          <option value="<%= user.id %>"><%= `${user.firstName} ${user.lastName}`.trim() %></option>
+          <% }) %>
+        </select>
+      </div>
+      <div>
+        <label class="mb-1 block font-medium" for="filter_label"><%= it.t('views.tasks.filters.label') %></label>
+        <select class="w-full rounded border border-gray-300" id="filter_label" name="labelId">
+          <option value=""></option>
+        </select>
+      </div>
+    </div>
+    <div class="mt-3 flex items-center gap-2">
+      <input id="filter_isMy" name="isMy" type="checkbox" value="on">
+      <label for="filter_isMy"><%= it.t('views.tasks.filters.onlyMine') %></label>
+    </div>
+    <div class="mt-3">
+      <%~ include("../mixins/submit", { value: it.t('views.tasks.filters.submit') }) %>
+    </div>
+  </form>
+</div>
+<div class="overflow-x-auto">
+<table class="mt-5 w-full bg-white text-left">
+  <thead>
+    <tr>
+      <th class="px-3 py-3"><%= it.t('views.tasks.columns.id') %></th>
+      <th class="px-3 py-3"><%= it.t('views.tasks.columns.name') %></th>
+      <th class="px-3 py-3"><%= it.t('views.tasks.columns.status') %></th>
+      <th class="px-3 py-3"><%= it.t('views.tasks.columns.creator') %></th>
+      <th class="px-3 py-3"><%= it.t('views.tasks.columns.executor') %></th>
+      <th class="px-3 py-3"><%= it.t('views.tasks.columns.createdAt') %></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% it.tasks.forEach((task) => { %>
+    <tr class="odd:bg-gray-50">
+      <td class="px-3 py-2"><%= task.id %></td>
+      <td class="px-3 py-2">
+        <a class="text-blue-600 hover:underline" href="<%= it.route('showTask', { id: task.id }) %>"><%= task.name %></a>
+      </td>
+      <td class="px-3 py-2"><%= task.statusName %></td>
+      <td class="px-3 py-2"><%= task.creatorName %></td>
+      <td class="px-3 py-2"><%= task.executorName %></td>
+      <td class="px-3 py-2"><%= it.formatDate(task.createdAt) %></td>
+      <td class="px-3 py-2">
+        <div class="flex items-center gap-2">
+          <a
+            class="cursor-pointer rounded bg-blue-600 px-2 py-1 text-sm text-white hover:bg-blue-700"
+            href="<%= it.route('editTask', { id: task.id }) %>"
+            ><%= it.t('views.tasks.buttons.edit') %></a
+          >
+          <% if (task.creatorId === it.currentUserId) { %>
+          <%~ include("../mixins/buttonTo", {
+            action: it.route('deleteTask', { id: task.id }),
+            method: 'delete',
+            class: 'cursor-pointer rounded bg-red-600 px-2 py-1 text-sm text-white hover:bg-red-700',
+            value: it.t('views.tasks.buttons.delete'),
+          }) %>
+          <% } %>
+        </div>
+      </td>
+    </tr>
+    <% }) %>
+  </tbody>
+</table>
+</div>

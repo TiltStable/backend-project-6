@@ -1,7 +1,8 @@
 // @ts-check
 
 import _ from 'lodash';
-import { taskStatuses } from '../db/schema.js';
+import { eq } from 'drizzle-orm';
+import { tasks, taskStatuses } from '../db/schema.js';
 import { create, getById, remove, update, validate } from '../lib/taskStatuses.js';
 
 export default (app) => {
@@ -79,6 +80,16 @@ export default (app) => {
       { name: 'deleteStatus', preValidation: app.authenticate },
       async (req, reply) => {
         const status = await findStatusOrNotFound(req.params.id);
+        // A status referenced by at least one task is kept.
+        const relatedTasks = await app.db
+          .select({ id: tasks.id })
+          .from(tasks)
+          .where(eq(tasks.statusId, status.id));
+        if (relatedTasks.length > 0) {
+          req.flash('error', req.t('flash.statuses.delete.blocked'));
+          reply.redirect(app.reverse('statuses'));
+          return reply;
+        }
         await remove(app.db, status.id);
         req.flash('success', req.t('flash.statuses.delete.success'));
         reply.redirect(app.reverse('statuses'));

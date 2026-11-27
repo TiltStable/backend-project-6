@@ -1,6 +1,6 @@
 // @ts-check
 
-import { pgTable, serial, text, timestamp } from 'drizzle-orm/pg-core';
+import { integer, pgTable, serial, text, timestamp } from 'drizzle-orm/pg-core';
 
 export const users = pgTable('users', {
   id: serial('id').primaryKey(),
@@ -15,6 +15,21 @@ export const users = pgTable('users', {
 export const taskStatuses = pgTable('task_statuses', {
   id: serial('id').primaryKey(),
   name: text('name').notNull(),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at').notNull().defaultNow(),
+});
+
+export const tasks = pgTable('tasks', {
+  id: serial('id').primaryKey(),
+  name: text('name').notNull(),
+  description: text('description').notNull().default(''),
+  statusId: integer('status_id')
+    .notNull()
+    .references(() => taskStatuses.id),
+  creatorId: integer('creator_id')
+    .notNull()
+    .references(() => users.id),
+  executorId: integer('executor_id').references(() => users.id),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
 });

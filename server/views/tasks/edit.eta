@@ -1,0 +1,5 @@
+<% layout("../layouts/application", { header: it.t('views.tasks.edit.edit') }) %>
+<form action="<%= it.route('updateTask', { id: it.task.id }) %>" method="post">
+  <input name="_method" type="hidden" value="patch">
+  <%~ include("./form", { entity: it.task, statuses: it.statuses, users: it.users, errors: it.errors, submitValue: it.t('views.tasks.edit.submit') }) %>
+</form>

@@ -5,6 +5,9 @@ export default {
     appName: 'Менеджер задач',
     attributes: {
       name: 'Наименование',
+      description: 'Описание',
+      statusId: 'Статус',
+      executorId: 'Исполнитель',
       firstName: 'Имя',
       lastName: 'Фамилия',
       email: 'Email',
@@ -16,6 +19,10 @@ export default {
         emailTaken: 'Этот email уже зарегистрирован',
         emailInvalid: 'Некорректный email',
         passwordLength: 'Не меньше 3 символов',
+      },
+      tasks: {
+        statusInvalid: 'Выберите существующий статус',
+        executorInvalid: 'Выберите существующего пользователя',
       },
     },
     flash: {
@@ -39,6 +46,7 @@ export default {
         },
         delete: {
           success: 'Пользователь удалён',
+          blocked: 'Пользователь имеет связанные задачи',
         },
         noRights: 'У вас нет прав на это действие',
       },
@@ -53,6 +61,20 @@ export default {
         },
         delete: {
           success: 'Статус удалён',
+          blocked: 'Статус используется в задачах',
+        },
+      },
+      tasks: {
+        create: {
+          error: 'Не удалось создать задачу',
+          success: 'Задача успешно создана',
+        },
+        update: {
+          error: 'Не удалось изменить задачу',
+          success: 'Задача успешно изменена',
+        },
+        delete: {
+          success: 'Задача удалена',
         },
       },
       authError: 'Доступ запрещён! Пожалуйста, авторизируйтесь.',
@@ -61,6 +83,7 @@ export default {
       application: {
         users: 'Пользователи',
         statuses: 'Статусы',
+        tasks: 'Задачи',
         signIn: 'Вход',
         signUp: 'Регистрация',
         signOut: 'Выход',
@@ -115,6 +138,48 @@ export default {
         edit: {
           edit: 'Редактирование статуса',
           submit: 'Сохранить',
+        },
+      },
+      tasks: {
+        index: {
+          index: 'Задачи',
+          create: 'Создать задачу',
+        },
+        columns: {
+          id: 'ID',
+          name: 'Наименование',
+          status: 'Статус',
+          creator: 'Автор',
+          executor: 'Исполнитель',
+          createdAt: 'Дата создания',
+        },
+        buttons: {
+          edit: 'Изменить',
+          delete: 'Удалить',
+        },
+        new: {
+          new: 'Создание задачи',
+          submit: 'Создать',
+        },
+        edit: {
+          edit: 'Изменение задачи',
+          submit: 'Изменить',
+        },
+        show: {
+          author: 'Автор',
+          executor: 'Исполнитель',
+          createdAt: 'Дата создания',
+        },
+        selects: {
+          chooseStatus: 'Выберите статус',
+          chooseExecutor: 'Выберите исполнителя',
+        },
+        filters: {
+          status: 'Статус',
+          executor: 'Исполнитель',
+          label: 'Метка',
+          onlyMine: 'Только мои задачи',
+          submit: 'Показать',
         },
       },
       welcome: {

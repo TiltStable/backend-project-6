@@ -13,6 +13,7 @@
           <li><a class="hover:underline" href="<%= it.route('users') %>"><%= it.t('layouts.application.users') %></a></li>
           <% if (it.isAuthenticated()) { %>
           <li><a class="hover:underline" href="<%= it.route('statuses') %>"><%= it.t('layouts.application.statuses') %></a></li>
+          <li><a class="hover:underline" href="<%= it.route('tasks') %>"><%= it.t('layouts.application.tasks') %></a></li>
           <% } %>
         </ul>
         <ul class="ml-auto flex flex-wrap items-center gap-4">

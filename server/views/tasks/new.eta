@@ -1,0 +1,4 @@
+<% layout("../layouts/application", { header: it.t('views.tasks.new.new') }) %>
+<form action="<%= it.route('tasks') %>" method="post">
+  <%~ include("./form", { entity: it.task, statuses: it.statuses, users: it.users, errors: it.errors, submitValue: it.t('views.tasks.new.submit') }) %>
+</form>

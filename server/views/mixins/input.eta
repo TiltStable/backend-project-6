@@ -7,6 +7,14 @@
 %>
 <div class="mb-4">
   <label class="mb-1 block font-medium" for="<%= inputId %>"><%= label %></label>
+  <% if (it.type === 'textarea') { %>
+  <textarea
+    class="w-full rounded <%= border %>"
+    id="<%= inputId %>"
+    name="data[<%= it.propertyName %>]"
+    placeholder="<%= label %>"
+    rows="5"><%= it._.get(it.entity, it.propertyName, '') %></textarea>
+  <% } else { %>
   <input
     class="w-full rounded <%= border %>"
     id="<%= inputId %>"
@@ -15,6 +23,7 @@
     type="<%= it.type ?? 'text' %>"
     value="<%= it._.get(it.entity, it.propertyName, '') %>"
   >
+  <% } %>
   <% if (hasError) { %>
   <div class="mt-1 text-sm text-red-600"><%= propertyErrors.map(({ message }) => message).join('. ') %></div>
   <% } %>
