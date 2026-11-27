@@ -1,0 +1,7 @@
+<% layout("../layouts/application", { header: it.t('views.statuses.new.new') }) %>
+<div class="mx-auto max-w-md rounded bg-white p-8 shadow-sm">
+  <form action="<%= it.route('statuses') %>" method="post">
+    <%~ include("../mixins/input", { entity: it.status, propertyName: 'name', errors: it.errors, type: 'text' }) %>
+    <%~ include("../mixins/submit", { value: it.t('views.statuses.new.submit') }) %>
+  </form>
+</div>

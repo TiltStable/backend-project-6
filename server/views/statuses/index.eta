@@ -1,0 +1,41 @@
+<% layout("../layouts/application", { header: it.t('views.statuses.index.index') }) %>
+<a
+  class="inline-block cursor-pointer rounded bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700"
+  href="<%= it.route('newStatus') %>"
+  ><%= it.t('views.statuses.new.new') %></a
+>
+<div class="overflow-x-auto">
+<table class="mt-5 w-full bg-white text-left">
+  <thead>
+    <tr>
+      <th class="px-3 py-3"><%= it.t('views.statuses.columns.id') %></th>
+      <th class="px-3 py-3"><%= it.t('views.statuses.columns.name') %></th>
+      <th class="px-3 py-3"><%= it.t('views.statuses.columns.createdAt') %></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% it.statuses.forEach((status) => { %>
+    <tr class="odd:bg-gray-50">
+      <td class="px-3 py-2"><%= status.id %></td>
+      <td class="px-3 py-2"><%= status.name %></td>
+      <td class="px-3 py-2"><%= it.formatDate(status.createdAt) %></td>
+      <td class="px-3 py-2">
+        <div class="flex items-center gap-2">
+          <a
+            class="cursor-pointer rounded bg-blue-600 px-2 py-1 text-sm text-white hover:bg-blue-700"
+            href="<%= it.route('editStatus', { id: status.id }) %>"
+            ><%= it.t('views.statuses.buttons.edit') %></a
+          >
+          <%~ include("../mixins/buttonTo", {
+            action: it.route('deleteStatus', { id: status.id }),
+            method: 'delete',
+            class: 'cursor-pointer rounded bg-red-600 px-2 py-1 text-sm text-white hover:bg-red-700',
+            value: it.t('views.statuses.buttons.delete'),
+          }) %>
+        </div>
+      </td>
+    </tr>
+    <% }) %>
+  </tbody>
+</table>
+</div>

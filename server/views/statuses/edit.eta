@@ -1,0 +1,8 @@
+<% layout("../layouts/application", { header: it.t('views.statuses.edit.edit') }) %>
+<div class="mx-auto max-w-md rounded bg-white p-8 shadow-sm">
+  <form action="<%= it.route('updateStatus', { id: it.status.id }) %>" method="post">
+    <input name="_method" type="hidden" value="patch">
+    <%~ include("../mixins/input", { entity: it.status, propertyName: 'name', errors: it.errors, type: 'text' }) %>
+    <%~ include("../mixins/submit", { value: it.t('views.statuses.edit.submit') }) %>
+  </form>
+</div>

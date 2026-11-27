@@ -4,6 +4,7 @@ export default {
   translation: {
     appName: 'Менеджер задач',
     attributes: {
+      name: 'Наименование',
       firstName: 'Имя',
       lastName: 'Фамилия',
       email: 'Email',
@@ -41,11 +42,25 @@ export default {
         },
         noRights: 'У вас нет прав на это действие',
       },
+      statuses: {
+        create: {
+          error: 'Не удалось создать статус',
+          success: 'Статус успешно создан',
+        },
+        update: {
+          error: 'Не удалось изменить статус',
+          success: 'Статус успешно изменён',
+        },
+        delete: {
+          success: 'Статус удалён',
+        },
+      },
       authError: 'Доступ запрещён! Пожалуйста, авторизируйтесь.',
     },
     layouts: {
       application: {
         users: 'Пользователи',
+        statuses: 'Статусы',
         signIn: 'Вход',
         signUp: 'Регистрация',
         signOut: 'Выход',
@@ -77,6 +92,28 @@ export default {
         },
         edit: {
           edit: 'Редактирование пользователя',
+          submit: 'Сохранить',
+        },
+      },
+      statuses: {
+        index: {
+          index: 'Статусы',
+        },
+        columns: {
+          id: 'ID',
+          name: 'Наименование',
+          createdAt: 'Дата создания',
+        },
+        buttons: {
+          edit: 'Изменить',
+          delete: 'Удалить',
+        },
+        new: {
+          new: 'Создать статус',
+          submit: 'Сохранить',
+        },
+        edit: {
+          edit: 'Редактирование статуса',
           submit: 'Сохранить',
         },
       },

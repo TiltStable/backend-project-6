@@ -4,6 +4,7 @@ export default {
   translation: {
     appName: 'Task Manager',
     attributes: {
+      name: 'Name',
       firstName: 'First name',
       lastName: 'Last name',
       email: 'Email',
@@ -41,11 +42,25 @@ export default {
         },
         noRights: 'You are not allowed to perform this action',
       },
+      statuses: {
+        create: {
+          error: 'Failed to create status',
+          success: 'Status successfully created',
+        },
+        update: {
+          error: 'Failed to update status',
+          success: 'Status has been updated',
+        },
+        delete: {
+          success: 'Status has been deleted',
+        },
+      },
       authError: 'Access denied! Please login',
     },
     layouts: {
       application: {
         users: 'Users',
+        statuses: 'Statuses',
         signIn: 'Login',
         signUp: 'Register',
         signOut: 'Logout',
@@ -77,6 +92,28 @@ export default {
         },
         edit: {
           edit: 'Edit user',
+          submit: 'Save',
+        },
+      },
+      statuses: {
+        index: {
+          index: 'Statuses',
+        },
+        columns: {
+          id: 'ID',
+          name: 'Name',
+          createdAt: 'Created at',
+        },
+        buttons: {
+          edit: 'Edit',
+          delete: 'Delete',
+        },
+        new: {
+          new: 'Create status',
+          submit: 'Save',
+        },
+        edit: {
+          edit: 'Edit status',
           submit: 'Save',
         },
       },

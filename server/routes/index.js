@@ -2,9 +2,10 @@
 
 import welcome from './welcome.js';
 import users from './users.js';
+import statuses from './statuses.js';
 import session from './session.js';
 
-const controllers = [welcome, users, session];
+const controllers = [welcome, users, statuses, session];
 
 export default (app) => {
   controllers.forEach((f) => {
