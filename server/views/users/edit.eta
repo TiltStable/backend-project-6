@@ -1,0 +1,11 @@
+<% layout("../layouts/application", { header: it.t('views.users.edit.edit') }) %>
+<div class="mx-auto max-w-md rounded bg-white p-8 shadow-sm">
+  <form action="<%= it.route('updateUser', { id: it.user.id }) %>" method="post">
+    <input name="_method" type="hidden" value="patch">
+    <%~ include("../mixins/input", { entity: it.user, propertyName: 'firstName', errors: it.errors, type: 'text' }) %>
+    <%~ include("../mixins/input", { entity: it.user, propertyName: 'lastName', errors: it.errors, type: 'text' }) %>
+    <%~ include("../mixins/input", { entity: it.user, propertyName: 'email', errors: it.errors, type: 'text' }) %>
+    <%~ include("../mixins/input", { entity: it.user, propertyName: 'password', errors: it.errors, type: 'password' }) %>
+    <%~ include("../mixins/submit", { value: it.t('views.users.edit.submit') }) %>
+  </form>
+</div>

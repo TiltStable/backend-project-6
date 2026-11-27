@@ -14,11 +14,10 @@ export default (app) => {
           return app.httpErrors.internalServerError(err);
         }
         if (!user) {
-          const signInForm = req.body.data;
-          const errors = {
-            email: [{ message: req.t('flash.session.create.error') }],
-          };
-          reply.render('session/new', { signInForm, errors });
+          // The assignment requires a friendly flash message on auth errors,
+          // so the error is shown as a role="alert" banner, not a field error.
+          req.flash('error', req.t('flash.session.create.error'));
+          reply.render('session/new', { signInForm: req.body.data });
           return reply;
         }
         await req.logIn(user);

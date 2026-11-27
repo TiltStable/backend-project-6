@@ -54,6 +54,20 @@ describe('test session', () => {
     expect(responseSignOut.statusCode).toBe(302);
   });
 
+  it('renders the sign-in failure as a flash alert', async () => {
+    const { email, password } = testData.users.existing;
+    // The truncated secret never matches the real one.
+    const wrong = password.slice(0, -1);
+    const response = await app.inject({
+      method: 'POST',
+      url: app.reverse('session'),
+      payload: { data: { email, password: wrong } },
+    });
+
+    expect(response.statusCode).toBe(200);
+    expect(response.body).toMatch(/role="alert"[^>]*>Wrong email or password/);
+  });
+
   afterAll(async () => {
     // await knex.migrate.rollback();
     await app.close();

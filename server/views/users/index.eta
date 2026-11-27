@@ -4,16 +4,36 @@
   <thead>
     <tr>
       <th class="px-3 py-3"><%= it.t('views.users.id') %></th>
+      <th class="px-3 py-3"><%= it.t('views.users.columns.fullName') %></th>
       <th class="px-3 py-3"><%= it.t('views.users.email') %></th>
       <th class="px-3 py-3"><%= it.t('views.users.createdAt') %></th>
+      <th class="px-3 py-3"><%= it.t('views.users.columns.actions') %></th>
     </tr>
   </thead>
   <tbody>
     <% it.users.forEach((user) => { %>
     <tr class="odd:bg-gray-50">
       <td class="px-3 py-2"><%= user.id %></td>
+      <td class="px-3 py-2"><%= `${user.firstName} ${user.lastName}`.trim() %></td>
       <td class="px-3 py-2"><%= user.email %></td>
       <td class="px-3 py-2"><%= it.formatDate(user.createdAt) %></td>
+      <td class="px-3 py-2">
+        <% if (it.currentUserId === user.id) { %>
+        <div class="flex items-center gap-2">
+          <a
+            class="cursor-pointer rounded bg-blue-600 px-2 py-1 text-sm text-white hover:bg-blue-700"
+            href="<%= it.route('editUser', { id: user.id }) %>"
+            ><%= it.t('views.users.buttons.edit') %></a
+          >
+          <%~ include("../mixins/buttonTo", {
+            action: it.route('deleteUser', { id: user.id }),
+            method: 'delete',
+            class: 'cursor-pointer rounded bg-red-600 px-2 py-1 text-sm text-white hover:bg-red-700',
+            value: it.t('views.users.buttons.delete'),
+          }) %>
+        </div>
+        <% } %>
+      </td>
     </tr>
     <% }) %>
   </tbody>

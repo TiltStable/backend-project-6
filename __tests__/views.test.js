@@ -166,12 +166,13 @@ describe('views', () => {
     });
 
     it('announce a successful sign-up', async () => {
-      const { password } = testData.users.new;
+      const { firstName, lastName, password } = testData.users.new;
       const created = await app.inject({
         method: 'POST',
         url: app.reverse('users'),
         cookies: { lang: 'ru' },
-        payload: { data: { email: uniqueEmail(), password } },
+        // Names are required by the step 3 assignment (the sign-up form matches the demo).
+        payload: { data: { firstName, lastName, email: uniqueEmail(), password } },
       });
       expect(created.statusCode).toBe(302);
       expect(alertText((await get('/', { ...jar(created), lang: 'ru' })).body)).toBe(

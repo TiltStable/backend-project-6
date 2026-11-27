@@ -4,6 +4,8 @@ export default {
   translation: {
     appName: 'Task Manager',
     attributes: {
+      firstName: 'First name',
+      lastName: 'Last name',
       email: 'Email',
       password: 'Password',
     },
@@ -11,6 +13,7 @@ export default {
       required: 'Must not be empty',
       users: {
         emailTaken: 'This email is already registered',
+        emailInvalid: 'Must be a valid email',
         passwordLength: 'Must be at least 3 characters',
       },
     },
@@ -29,6 +32,14 @@ export default {
           error: 'Failed to register',
           success: 'User registered successfully',
         },
+        update: {
+          error: 'Failed to update user',
+          success: 'User has been updated',
+        },
+        delete: {
+          success: 'User has been deleted',
+        },
+        noRights: 'You are not allowed to perform this action',
       },
       authError: 'Access denied! Please login',
     },
@@ -52,9 +63,21 @@ export default {
         id: 'ID',
         email: 'Email',
         createdAt: 'Created at',
+        columns: {
+          fullName: 'Full name',
+          actions: 'Actions',
+        },
+        buttons: {
+          edit: 'Edit',
+          delete: 'Delete',
+        },
         new: {
           submit: 'Register',
           signUp: 'Register',
+        },
+        edit: {
+          edit: 'Edit user',
+          submit: 'Save',
         },
       },
       welcome: {

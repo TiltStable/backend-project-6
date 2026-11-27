@@ -21,8 +21,8 @@ export const getAlertClass = (type) => {
 };
 
 export default (app) => ({
-  route(name) {
-    return app.reverse(name);
+  route(name, params) {
+    return app.reverse(name, params);
   },
   _,
   getAlertClass,

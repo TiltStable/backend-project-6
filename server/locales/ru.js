@@ -4,6 +4,8 @@ export default {
   translation: {
     appName: 'Менеджер задач',
     attributes: {
+      firstName: 'Имя',
+      lastName: 'Фамилия',
       email: 'Email',
       password: 'Пароль',
     },
@@ -11,6 +13,7 @@ export default {
       required: 'Не должно быть пустым',
       users: {
         emailTaken: 'Этот email уже зарегистрирован',
+        emailInvalid: 'Некорректный email',
         passwordLength: 'Не меньше 3 символов',
       },
     },
@@ -29,6 +32,14 @@ export default {
           error: 'Не удалось зарегистрировать',
           success: 'Пользователь успешно зарегистрирован',
         },
+        update: {
+          error: 'Не удалось изменить пользователя',
+          success: 'Пользователь успешно изменён',
+        },
+        delete: {
+          success: 'Пользователь удалён',
+        },
+        noRights: 'У вас нет прав на это действие',
       },
       authError: 'Доступ запрещён! Пожалуйста, авторизируйтесь.',
     },
@@ -52,9 +63,21 @@ export default {
         id: 'ID',
         email: 'Email',
         createdAt: 'Дата создания',
+        columns: {
+          fullName: 'Полное имя',
+          actions: 'Действия',
+        },
+        buttons: {
+          edit: 'Изменить',
+          delete: 'Удалить',
+        },
         new: {
           submit: 'Сохранить',
           signUp: 'Регистрация',
+        },
+        edit: {
+          edit: 'Редактирование пользователя',
+          submit: 'Сохранить',
         },
       },
       welcome: {

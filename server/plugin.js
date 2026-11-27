@@ -124,7 +124,11 @@ const registerPlugins = async (app) => {
     },
   });
 
-  fastifyPassport.registerUserDeserializer((user) => findById(app.db, user.id));
+  // A deleted user must degrade to a guest session, not break every request:
+  // undefined would make @fastify/passport throw, null makes it log out gracefully.
+  fastifyPassport.registerUserDeserializer((user) =>
+    findById(app.db, user.id).then((found) => found ?? null),
+  );
   fastifyPassport.registerUserSerializer((user) => Promise.resolve(user));
   fastifyPassport.use(new FormStrategy('form', app));
   await app.register(fastifyPassport.initialize());
