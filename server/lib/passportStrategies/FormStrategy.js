@@ -22,6 +22,7 @@ export default class FormStrategy extends Strategy {
       return this.success(user);
     }
 
-    return this.fail();
+    // The message is built per request: it depends on the request language.
+    return this.fail({ type: 'error', message: request.t('flash.authError') });
   }
 }

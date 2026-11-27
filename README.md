@@ -7,6 +7,7 @@
 Учебный проект Хекслета: https://ru.hexlet.io/programs/backend
 Задеплоенное приложение: https://task-manager-tiltstable.onrender.com
 Как это должно работать: https://files.hexlet.app/a/0rk6cs
+Язык интерфейса: по умолчанию английский, адрес `/?lang=ru` переключает на русский и запоминает выбор в cookie.
 
 
 ## Стек

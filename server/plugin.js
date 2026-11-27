@@ -22,6 +22,12 @@ import { closeDb, createDb } from './db/index.js';
 import { findById } from './lib/users.js';
 import fastifyMethodOverride from '@hexlet/fastify-method-override';
 import FormStrategy from './lib/passportStrategies/FormStrategy.js';
+import {
+  DEFAULT_LANGUAGE,
+  LANGUAGE_COOKIE,
+  getSupportedLanguages,
+  resolveLanguage,
+} from './lib/language.js';
 
 const __dirname = fileURLToPath(path.dirname(import.meta.url));
 
@@ -43,8 +49,14 @@ const setUpViews = (app) => {
     templates: path.join(__dirname, '..', 'server', 'views'),
   });
 
+  // Translations depend on the request language, so they are passed per request.
   app.decorateReply('render', function render(viewPath, locals) {
-    this.view(viewPath, { ...locals, reply: this });
+    const { lang, t } = this.request;
+    if (typeof t !== 'function') {
+      throw new Error('Request language is not resolved: the preParsing hook did not run');
+    }
+
+    this.view(viewPath, { ...locals, lang, t, reply: this });
   });
 };
 
@@ -58,7 +70,7 @@ const setUpStaticAssets = (app) => {
 
 const setupLocalization = async () => {
   await i18next.init({
-    lng: 'en',
+    lng: DEFAULT_LANGUAGE,
     fallbackLng: 'ru',
     // debug: isDevelopment,
     resources: {
@@ -68,7 +80,25 @@ const setupLocalization = async () => {
   });
 };
 
+const addRequestLanguage = (app) => {
+  const supportedLanguages = getSupportedLanguages(i18next.options.resources);
+  app.decorateRequest('lang', null);
+  app.decorateRequest('t', null);
+
+  // Runs before preValidation, where authentication may answer with a flash message.
+  app.addHook('preParsing', async (req, reply) => {
+    const { language, remember } = resolveLanguage(req, supportedLanguages);
+    req.lang = language;
+    req.t = i18next.getFixedT(language);
+    if (remember) {
+      reply.setCookie(LANGUAGE_COOKIE, language, { path: '/', httpOnly: true, sameSite: 'lax' });
+    }
+  });
+};
+
 const addHooks = (app) => {
+  addRequestLanguage(app);
+
   app.addHook('preHandler', async (req, reply) => {
     reply.locals = {
       isAuthenticated: () => req.isAuthenticated(),
@@ -105,7 +135,8 @@ const registerPlugins = async (app) => {
       'form',
       {
         failureRedirect: app.reverse('root'),
-        failureFlash: i18next.t('flash.authError'),
+        // The strategy reports the message itself because it depends on the request language.
+        failureFlash: true,
       },
       // @ts-expect-error
     )(...args),

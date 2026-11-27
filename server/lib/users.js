@@ -1,7 +1,6 @@
 // @ts-check
 
 import { eq } from 'drizzle-orm';
-import i18next from 'i18next';
 import { users } from '../db/schema.js';
 import encrypt from './secure.js';
 
@@ -24,20 +23,22 @@ export const create = (db, { email, password }) =>
 
 /**
  * Возвращает ошибки в виде { поле: [{ message }] }, пустой объект означает валидные данные.
+ * `t` translates the messages in the language of the current request.
+ * @param {(key: string) => string} t
  */
-export const validate = async (db, data) => {
+export const validate = async (db, data, t) => {
   const errors = {};
   const email = data?.email ?? '';
   const password = data?.password ?? '';
 
   if (email.length === 0) {
-    errors.email = [{ message: i18next.t('validation.required') }];
+    errors.email = [{ message: t('validation.required') }];
   } else if (await findByEmail(db, email)) {
-    errors.email = [{ message: i18next.t('validation.users.emailTaken') }];
+    errors.email = [{ message: t('validation.users.emailTaken') }];
   }
 
   if (password.length < minPasswordLength) {
-    errors.password = [{ message: i18next.t('validation.users.passwordLength') }];
+    errors.password = [{ message: t('validation.users.passwordLength') }];
   }
 
   return errors;

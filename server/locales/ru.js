@@ -2,7 +2,11 @@
 
 export default {
   translation: {
-    appName: 'Fastify Шаблон',
+    appName: 'Менеджер задач',
+    attributes: {
+      email: 'Email',
+      password: 'Пароль',
+    },
     validation: {
       required: 'Не должно быть пустым',
       users: {
@@ -34,6 +38,7 @@ export default {
         signIn: 'Вход',
         signUp: 'Регистрация',
         signOut: 'Выход',
+        footer: '© Hexlet Ltd, 2021',
       },
     },
     views: {

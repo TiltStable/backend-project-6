@@ -3,13 +3,15 @@
   const hasError = !it._.isEmpty(propertyErrors);
   const inputId = `data_${it.propertyName}`;
   const border = hasError ? 'border-red-500' : 'border-gray-300';
+  const label = it.t(`attributes.${it.propertyName}`);
 %>
 <div class="mb-4">
-  <label class="mb-1 block font-medium" for="<%= inputId %>"><%= it.propertyName %></label>
+  <label class="mb-1 block font-medium" for="<%= inputId %>"><%= label %></label>
   <input
     class="w-full rounded <%= border %>"
     id="<%= inputId %>"
     name="data[<%= it.propertyName %>]"
+    placeholder="<%= label %>"
     type="<%= it.type ?? 'text' %>"
     value="<%= it._.get(it.entity, it.propertyName, '') %>"
   >

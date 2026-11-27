@@ -1,12 +1,12 @@
 <!doctype html>
-<html lang="en">
+<html lang="<%= it.lang %>">
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title><%= it.t('appName') %></title>
     <link href="<%= it.assetPath('main.css') %>" rel="stylesheet">
   </head>
   <body class="flex min-h-screen flex-col bg-gray-50">
-    <nav class="bg-white px-6 py-3">
+    <nav class="bg-white px-6 py-3 shadow-md">
       <div class="mx-auto flex max-w-5xl flex-wrap items-center gap-6">
         <a class="text-lg font-semibold" href="<%= it.route('root') %>"><%= it.t('appName') %></a>
         <ul class="flex flex-wrap items-center gap-4">
@@ -42,7 +42,7 @@
 
     <footer class="mt-10 bg-gray-800 text-gray-100">
       <div class="mx-auto max-w-5xl px-4 py-3">
-        <a target="_blank" href="https://ru.hexlet.io">Hexlet</a>
+        <a target="_blank" href="https://ru.hexlet.io"><%= it.t('layouts.application.footer') %></a>
       </div>
     </footer>
   </body>

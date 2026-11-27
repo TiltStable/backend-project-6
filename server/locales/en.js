@@ -2,7 +2,11 @@
 
 export default {
   translation: {
-    appName: 'Fastify Boilerplate',
+    appName: 'Task Manager',
+    attributes: {
+      email: 'Email',
+      password: 'Password',
+    },
     validation: {
       required: 'Must not be empty',
       users: {
@@ -34,6 +38,7 @@ export default {
         signIn: 'Login',
         signUp: 'Register',
         signOut: 'Logout',
+        footer: '© Hexlet Ltd, 2021',
       },
     },
     views: {

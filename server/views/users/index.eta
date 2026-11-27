@@ -1,4 +1,4 @@
-<% layout("../layouts/application") %>
+<% layout("../layouts/application", { header: it.t('layouts.application.users') }) %>
 <div class="overflow-x-auto">
 <table class="mt-5 w-full bg-white text-left">
   <thead>
